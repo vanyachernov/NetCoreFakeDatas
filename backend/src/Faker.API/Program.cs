@@ -1,7 +1,12 @@
+using Faker.Application;
+
 var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddEndpointsApiExplorer();
     builder.Services.AddSwaggerGen();
+    builder.Services.AddControllers();
+
+    builder.Services.AddApplication();
 }
 
 var app = builder.Build();
@@ -13,6 +18,8 @@ var app = builder.Build();
     }
 
     app.UseHttpsRedirection();
+
+    app.MapControllers();
 
     app.Run();
 }
