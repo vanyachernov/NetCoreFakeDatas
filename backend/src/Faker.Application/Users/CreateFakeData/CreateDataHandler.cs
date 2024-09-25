@@ -1,6 +1,6 @@
 using Bogus;
 using CSharpFunctionalExtensions;
-using Faker.Domain.UserManagement;
+using Faker.Application.Users.CreateFakeData.Errors;
 
 namespace Faker.Application.Users.CreateFakeData;
 
@@ -28,9 +28,8 @@ public class CreateDataHandler
                 Address = newRecord.Address,
                 PhoneNumber = newRecord.PhoneNumber
             };
-
             
-            // I'll add errors handler here
+            ErrorsHandler.SetErrors(newUserResponse, request.ErrorCount);
             
             userDataRecords.Add(newUserResponse);
         }
