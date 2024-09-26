@@ -12,6 +12,8 @@ public class CreateDataHandler
     {
         var userDataRecords = new List<CreateDataResponse>();
 
+        var random = new Random();
+
         Randomizer.Seed = new Random(request.Seed + request.Page);
 
         var faker = CreateUserModelFaker.Create(request.Region);
@@ -29,7 +31,7 @@ public class CreateDataHandler
                 PhoneNumber = newRecord.PhoneNumber
             };
             
-            ErrorsHandler.SetErrors(newUserResponse, request.ErrorCount);
+            ErrorsHandler.SetErrors(newUserResponse, request.Region, request.ErrorCount, random);
             
             userDataRecords.Add(newUserResponse);
         }

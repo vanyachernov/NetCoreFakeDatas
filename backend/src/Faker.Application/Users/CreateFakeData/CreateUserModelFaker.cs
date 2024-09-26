@@ -30,8 +30,8 @@ public sealed class CreateUserModelFaker : Faker<CreateDataResponse>
         var locale = region.ToLower() switch
         {
             "us" => "en",
-            "pl" => "pl",
-            "uz" => "uz",
+            "ru" => "ru",
+            "ua" => "uk",
             _ => "en"
         };
 

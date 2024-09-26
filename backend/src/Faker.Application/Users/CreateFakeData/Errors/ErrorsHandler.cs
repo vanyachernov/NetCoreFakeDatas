@@ -4,26 +4,27 @@ public static class ErrorsHandler
 {
     public static void SetErrors(
         CreateDataResponse model,
-        double errorCount)
+        string locale,
+        double errorCount,
+        Random random)
     {
-        var random = new Random();
-
         var allErrors = (int)errorCount;
         var unCertainty = errorCount - allErrors;
 
         for (var k = 0; k < allErrors; k++)
         {
-            SetErrorType(model, random);
+            SetErrorType(model, locale, random);
         }
 
         if (random.NextDouble() < unCertainty)
         {
-            SetErrorType(model, random);
+            SetErrorType(model, locale, random);
         }
     }
 
     private static void SetErrorType(
         CreateDataResponse model,
+        string locale,
         Random random)
     {
         var fieldType = random.Next(1, 4);
@@ -34,6 +35,7 @@ public static class ErrorsHandler
             case 1:
                 var editingFullNameResult = SetErrorToField(
                     model.FullName.FirstName, 
+                    locale,
                     errorType, 
                     random);
                 model.FullName = model.FullName with { FirstName = editingFullNameResult };
@@ -41,6 +43,7 @@ public static class ErrorsHandler
             case 2:
                 var editingAddressResult = SetErrorToField(
                     model.Address.StreetAddress, 
+                    locale,
                     errorType, 
                     random);
                 model.Address = model.Address with { StreetAddress = editingAddressResult };
@@ -48,6 +51,7 @@ public static class ErrorsHandler
             case 3:
                 model.PhoneNumber = SetErrorToField(
                     model.PhoneNumber,
+                    locale,
                     errorType,
                     random);
                 break;
@@ -56,13 +60,14 @@ public static class ErrorsHandler
     
     private static string SetErrorToField(
         string field,
+        string locale,
         int errorType,
         Random random)
     {
         return errorType switch
         {
             1 => RemoveRandomCharacter(field, random),
-            2 => AddRandomCharacter(field, random),
+            2 => AddRandomCharacter(field, locale, random),
             3 => SwapRandomCharacters(field, random),
             _ => field
         };
@@ -83,9 +88,16 @@ public static class ErrorsHandler
         return new string(characters);
     }
 
-    private static string AddRandomCharacter(string input, Random random)
+    private static string AddRandomCharacter(string input, string locale, Random random)
     {
-        var randomCharacter = (char)random.Next('a', 'z');
+        var randomCharacter = locale switch
+        {
+            "en" => (char)random.Next('a', 'z'),
+            "ru" => (char)random.Next('а', 'я'),
+            "ua" => (char)random.Next('а', 'я'),
+            _ => (char)random.Next('a', 'z')
+        };
+        
         var index = random.Next(0, input.Length);
         
         return input.Insert(index, randomCharacter.ToString());
