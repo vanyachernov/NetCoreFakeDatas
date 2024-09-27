@@ -31,10 +31,6 @@ function App() {
         }
     };
 
-    const handleExport = () => {
-        console.log("Export data:", data);
-    };
-
     return (
         <>
             <Header />
