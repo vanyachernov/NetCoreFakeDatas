@@ -20,7 +20,7 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
     const [users, setUsers] = useState<CreateFakeDataResponse[]>(data);
     const [loading, setLoading] = useState(false);
     const [region, setRegion] = useState<string>("ru");
-    const [errors, setErrors] = useState<number>(0);
+    const [errors, setErrors] = useState<string>('');
     const [seed, setSeed] = useState<number>(6905093);
     const [page, setPage] = useState(1);
     const tableRef = useRef<HTMLDivElement>(null);
@@ -30,7 +30,7 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
 
         setLoading(true);
         try {
-            const newUsers = await onGenerate({ region, errorsCount: errors, seed });
+            const newUsers = await onGenerate({ region, errorsCount: parseFloat(errors), seed });
             setUsers(prevData => [...prevData, ...newUsers]);
             setPage(page + 1);
         } catch (error) {
@@ -63,7 +63,7 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
 
     const handleGenerate = async () => {
         try {
-            const users = await onGenerate({ region, errorsCount: errors, seed });
+            const users = await onGenerate({ region, errorsCount: parseFloat(errors), seed });
             setUsers(users);
         } catch (error) {
             console.error("Error fetching new fake users:", error);
@@ -81,6 +81,23 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
             console.error("Please, enter only number format data!");
         }
     };
+
+    const handleChangeErrorsCount = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setErrors(value); // Обновляем состояние, не проверяя пока на валидность
+    };
+
+    const handleBlur = () => {
+        const regex = /^\d*\.?\d*$/;
+
+        if (regex.test(errors)) {
+            setErrors(errors ? String(parseFloat(errors)) : '0');
+        } else {
+            console.error("Please, enter only number format data!");
+            setErrors('0');
+        }
+    };
+
 
     const handleRandomSeedChange = () => {
         setSeed(Math.floor(Math.random() * 10000000));
@@ -103,8 +120,6 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
             },
             phoneNumber: user.phoneNumber,
         }));
-        
-        console.log(formattedUsersData);
 
         ExportDataToCsv(formattedUsersData);
     }
@@ -124,12 +139,25 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
 
                     <Flex align="center" gap={5}>
                         <Text>Errors:</Text>
-                        <Slider value={errors} onChange={setErrors} max={800} width="150px" mr={4}>
+                        <Slider
+                            value={parseFloat(errors) || 0}
+                            onChange={(value) => setErrors(String(value))}
+                            max={800}
+                            width="150px"
+                            mr={4}
+                        >
                             <SliderTrack>
                                 <SliderFilledTrack />
                             </SliderTrack>
                             <SliderThumb />
                         </Slider>
+                        <Input
+                            value={errors}
+                            onChange={handleChangeErrorsCount}
+                            onBlur={handleBlur}
+                            width="150px"
+                            mr={4}
+                        />
                     </Flex>
 
                     <Flex>
