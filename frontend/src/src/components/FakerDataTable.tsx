@@ -5,6 +5,7 @@ import {
 } from "@chakra-ui/react";
 import { CreateFakeDataResponse } from "../models/CreateFakeDataResponse.ts";
 import React, { useEffect, useRef, useState } from "react";
+import {ExportDataToCsv} from "../services/exportService.ts";
 
 interface FakerDataTableProps {
     data: CreateFakeDataResponse[];
@@ -16,7 +17,7 @@ interface FakerDataTableProps {
 }
 
 export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps) {
-    const [displayedData, setDisplayedData] = useState<CreateFakeDataResponse[]>(data);
+    const [users, setUsers] = useState<CreateFakeDataResponse[]>(data);
     const [loading, setLoading] = useState(false);
     const [region, setRegion] = useState<string>("ru");
     const [errors, setErrors] = useState<number>(0);
@@ -30,7 +31,7 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
         setLoading(true);
         try {
             const newUsers = await onGenerate({ region, errorsCount: errors, seed });
-            setDisplayedData(prevData => [...prevData, ...newUsers]);
+            setUsers(prevData => [...prevData, ...newUsers]);
             setPage(page + 1);
         } catch (error) {
             console.error("Error fetching new fake users:", error);
@@ -63,7 +64,7 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
     const handleGenerate = async () => {
         try {
             const users = await onGenerate({ region, errorsCount: errors, seed });
-            setDisplayedData(users);
+            setUsers(users);
         } catch (error) {
             console.error("Error fetching new fake users:", error);
         }
@@ -85,9 +86,28 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
         setSeed(Math.floor(Math.random() * 10000000));
     };
 
-    const onExport = () => {
-        // soon
-    };
+    const handleExport = () => {
+        const formattedUsersData: CreateFakeDataResponse[] = users.map((user, index) => ({
+            number: index + 1,
+            id: user.id,
+            fullName: {
+                firstName: user.fullName.firstName,
+                lastName: user.fullName.lastName
+            },
+            address: {
+                streetAddress: user.address.streetAddress,
+                streetName: user.address.streetName,
+                city: user.address.city,
+                state: user.address.state,
+                country: user.address.country,
+            },
+            phoneNumber: user.phoneNumber,
+        }));
+        
+        console.log(formattedUsersData);
+
+        ExportDataToCsv(formattedUsersData);
+    }
 
     return (
         <Box>
@@ -118,7 +138,7 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
                     </Flex>
 
                     <Button colorScheme="teal" onClick={handleGenerate} mr={4}>Generate</Button>
-                    <Button colorScheme="teal" onClick={onExport}>Export</Button>
+                    <Button colorScheme="teal" onClick={handleExport}>Export</Button>
                 </Flex>
             </Flex>
 
@@ -134,7 +154,7 @@ export default function FakerDataTable({ data, onGenerate }: FakerDataTableProps
                         </Tr>
                     </Thead>
                     <Tbody>
-                        {displayedData.map((row, index) => (
+                        {users.map((row, index) => (
                             <Tr key={index}>
                                 <Td>{index + 1}</Td>
                                 <Td>{row.id}</Td>
