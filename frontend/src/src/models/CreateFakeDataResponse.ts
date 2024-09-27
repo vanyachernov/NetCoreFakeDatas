@@ -3,7 +3,6 @@ export interface CreateFakeDataResponse {
     id: string;
     fullName: { 
         firstName: string;
-        middleName: string;
         lastName: string;
     };
     address: {

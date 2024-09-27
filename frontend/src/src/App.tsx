@@ -1,11 +1,9 @@
-import './App.css'
+import './App.css';
 import Header from "./components/Header.tsx";
-import {Box} from "@chakra-ui/react";
 import FakerDataTable from "./components/FakerDataTable.tsx";
-import {useState} from "react";
-import {CreateFakeDataResponse} from "./models/CreateFakeDataResponse.ts";
-import {FetchFakeUsers} from "./services/userService.ts";
-import FakerDataTableControls from "./components/FakerDataTableControls.tsx";
+import { useState } from "react";
+import { CreateFakeDataResponse } from "./models/CreateFakeDataResponse.ts";
+import { FetchFakeUsers } from "./services/userService.ts";
 
 interface GenerateParams {
     region: string;
@@ -14,38 +12,35 @@ interface GenerateParams {
 }
 
 function App() {
-    const [data, setData] = 
-        useState<CreateFakeDataResponse[]>([]);
+    const [data, setData] = useState<CreateFakeDataResponse[]>([]);
 
-    const handleGenerate = async ({ region, errorsCount, seed } : GenerateParams) => {
+    const handleGenerate = async ({ region, errorsCount, seed }: GenerateParams): Promise<CreateFakeDataResponse[]> => {
         try {
-            const users = await FetchFakeUsers({ 
-                region, 
-                errorCount: 
-                errorsCount, 
-                seed, 
-                page: 1 
+            const users = await FetchFakeUsers({
+                region,
+                errorCount: errorsCount,
+                seed,
+                page: 1
             });
+
             setData(users);
+            return users;
         } catch (error) {
-            console.error("Ошибка при получении фейковых пользователей:", error);
+            console.error("Error fetching users:", error);
+            return [];
         }
     };
-
 
     const handleExport = () => {
         console.log("Export data:", data);
     };
-    
+
     return (
         <>
-          <Header />
-          <Box>
-                <FakerDataTableControls onGenerate={handleGenerate} onExport={handleExport} />
-                <FakerDataTable data={data} />
-          </Box>
+            <Header />
+            <FakerDataTable data={data} onGenerate={handleGenerate} />
         </>
-    )
+    );
 }
 
-export default App
+export default App;

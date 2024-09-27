@@ -14,7 +14,7 @@ export const FetchFakeUsers = async ({
     page: number;
 }): Promise<CreateFakeDataResponse[]> => {
     try {
-        const response = await axios.get<{ result: CreateFakeDataResponse[] }>(
+        const response = await axios.get<CreateFakeDataResponse[]>(
             urls.USERS,
             {
                 params: {
@@ -25,10 +25,13 @@ export const FetchFakeUsers = async ({
                 },
             }
         );
+
         if (!response.data) {
             console.error("No user data");
+            return [];
         }
-        return response.data.result;
+
+        return response.data;
     } catch (exception) {
         console.error(exception);
         throw exception;

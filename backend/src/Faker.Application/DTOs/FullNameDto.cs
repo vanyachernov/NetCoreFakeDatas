@@ -1,3 +1,3 @@
 namespace Faker.Application.DTOs;
 
-public record FullNameDto(string FirstName, string MiddleName, string LastName);
+public record FullNameDto(string FirstName, string LastName);
