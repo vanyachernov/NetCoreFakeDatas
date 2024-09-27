@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
     {
         options.AddDefaultPolicy(policy =>
         {
-            policy.WithOrigins("http://localhost:5173");
+            policy.WithOrigins("https://net-core-fake-datas-fezl.vercel.app");
             policy.AllowAnyMethod();
             policy.AllowAnyHeader();
         });
@@ -28,8 +28,6 @@ var app = builder.Build();
     }
     
     app.UseCors();
-
-    app.UseHttpsRedirection();
 
     app.MapControllers();
 
