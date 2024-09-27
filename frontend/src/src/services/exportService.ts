@@ -13,8 +13,6 @@ export const ExportDataToCsv = async (visibleUsers : CreateFakeDataResponse[]) =
             }
         );
         
-        console.log(visibleUsers);
-        
         const blob = new Blob([response.data], { type: 'text/csv;charset=utf-8;' });
         
         const fileName = response.headers['content-disposition']
