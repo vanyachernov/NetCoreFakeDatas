@@ -1,0 +1,19 @@
+services:
+  faker-backend:
+    container_name: back
+    image: fakerb
+    build:
+      context: ./backend
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8001:5181"
+  faker-frontend:
+    container_name: front
+    image: fakerf
+    build:
+      context: ./frontend/src
+    ports:
+      - "8002:8000"
+    depends_on:
+      - faker-backend
