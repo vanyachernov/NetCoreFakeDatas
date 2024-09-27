@@ -12,7 +12,6 @@ public sealed class CreateUserModelFaker : Faker<CreateDataResponse>
         RuleFor(u => u.Number, f => f.IndexFaker + 1);
         RuleFor(u => u.FullName, f => new FullNameDto(
             f.Name.FirstName(),
-            f.Name.FirstName(),
             f.Name.LastName()
         ));
         RuleFor(u => u.Address, f => new AddressDto(
