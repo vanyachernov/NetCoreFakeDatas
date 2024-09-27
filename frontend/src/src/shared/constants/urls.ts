@@ -1,4 +1,4 @@
-export const BASE_URL = "http://localhost:5028";
+export const BASE_URL = "https://netcorefakedatas.onrender.com";
 
 export const urls = {
     USERS: `${BASE_URL}/users`,
