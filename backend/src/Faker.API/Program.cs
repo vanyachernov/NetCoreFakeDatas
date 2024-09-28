@@ -12,7 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
     {
         options.AddDefaultPolicy(policy =>
         {
-            policy.WithOrigins("https://net-core-fake-datas-fezl.vercel.app");
+            policy.WithOrigins("https://net-core-fake-datas.vercel.app");
             policy.AllowAnyMethod();
             policy.AllowAnyHeader();
         });
